@@ -1,0 +1,57 @@
+import sqlite3
+
+# Create a SQLite database and connect to it
+conn = sqlite3.connect('college_management.db')
+cursor = conn.cursor()
+
+# Create a Students table
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS students (
+        student_id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        age INTEGER NOT NULL,
+        department TEXT NOT NULL
+    )
+''')
+conn.commit()
+
+def add_student():
+    name = input("Enter student name: ")
+    age = int(input("Enter student age: "))
+    department = input("Enter student department: ")
+
+    cursor.execute('''
+        INSERT INTO students (name, age, department)
+        VALUES (?, ?, ?)
+    ''', (name, age, department))
+    conn.commit()
+    print("Student added successfully!")
+
+def view_students():
+    cursor.execute('''
+        SELECT * FROM students
+    ''')
+    students = cursor.fetchall()
+
+    print("Student ID\tName\t\tAge\tDepartment")
+    for student in students:
+        print(f"{student[0]}\t\t{student[1]}\t\t{student[2]}\t{student[3]}")
+
+# Main program loop
+while True:
+    print("\nCollege Management System")
+    print("1. Add Student")
+    print("2. View Students")
+    print("3. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        add_student()
+    elif choice == '2':
+        view_students()
+    elif choice == '3':
+        print("Exiting program. Goodbye!")
+        break
+    else:
+        print("Invalid choice. Please enter a valid option.")
